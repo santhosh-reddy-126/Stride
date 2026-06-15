@@ -48,6 +48,30 @@
         <artifactId>dropwizard-core</artifactId>
         <version>4.0.11</version>
     </dependency>
+
+      <dependency>
+          <groupId>io.dropwizard</groupId>
+          <artifactId>dropwizard-hibernate</artifactId>
+          <version>4.0.11</version>
+      </dependency>
+
+      <dependency>
+          <groupId>org.postgresql</groupId>
+          <artifactId>postgresql</artifactId>
+          <version>42.7.7</version>
+      </dependency>
+
+      <dependency>
+          <groupId>org.mindrot</groupId>
+          <artifactId>jbcrypt</artifactId>
+          <version>0.4</version>
+      </dependency>
+
+      <dependency>
+          <groupId>com.smoketurner</groupId>
+          <artifactId>dropwizard-swagger</artifactId>
+          <version>4.0.5-1</version>
+      </dependency>
   </dependencies>
 
   <build>

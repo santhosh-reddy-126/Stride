@@ -4,13 +4,61 @@ package com.project.taskmanager;
  * Hello world!
  */
 
+import com.project.taskmanager.DAO.UserDAO;
+import com.project.taskmanager.Exception.UserExceptionMapper;
+import com.project.taskmanager.model.User;
+import com.project.taskmanager.resource.AuthResource;
 import com.project.taskmanager.resource.HelloResource;
 
+import com.project.taskmanager.service.AuthService;
+import com.project.taskmanager.service.UserService;
 import io.dropwizard.core.Application;
+import io.dropwizard.core.setup.Bootstrap;
 import io.dropwizard.core.setup.Environment;
+import io.dropwizard.db.DataSourceFactory;
+import io.dropwizard.hibernate.dual.HibernateBundle;
+import io.federecio.dropwizard.swagger.SwaggerBundle;
+import io.federecio.dropwizard.swagger.SwaggerBundleConfiguration;
 
 public class TaskManagerApp
         extends Application<TaskManagerConfiguration> {
+
+    private final HibernateBundle<TaskManagerConfiguration>
+            hibernateBundle =
+            new HibernateBundle<>(User.class) {
+
+                @Override
+                public DataSourceFactory getDataSourceFactory(
+                        TaskManagerConfiguration configuration) {
+                    return configuration.getDatabase();
+                }
+
+                @Override
+                public DataSourceFactory getReadSourceFactory(
+                        TaskManagerConfiguration configuration) {
+                    return configuration.getDatabase();
+                }
+            };
+
+    @Override
+    public void initialize(
+            Bootstrap<TaskManagerConfiguration> bootstrap) {
+
+        bootstrap.addBundle(hibernateBundle);
+
+        bootstrap.addBundle(
+                new SwaggerBundle<TaskManagerConfiguration>() {
+
+                    @Override
+                    protected SwaggerBundleConfiguration
+                    getSwaggerBundleConfiguration(
+                            TaskManagerConfiguration configuration) {
+
+                        return configuration.swagger;
+                    }
+                }
+        );
+    }
 
     public static void main(String[] args) throws Exception {
         new TaskManagerApp().run(args);
@@ -22,5 +70,12 @@ public class TaskManagerApp
             Environment environment) {
 
         environment.jersey().register(new HelloResource());
+        environment.jersey()
+                .register(new UserExceptionMapper());
+
+        UserDAO userDAO = new UserDAO(hibernateBundle.getSessionFactory());
+        UserService userService = new UserService(userDAO);
+        AuthService authService = new AuthService(userService);
+        environment.jersey().register(new AuthResource(authService));
     }
 }
