@@ -6,6 +6,7 @@ import com.project.taskmanager.DTO.Request.SignUpRequest;
 import com.project.taskmanager.service.AuthService;
 import io.dropwizard.hibernate.UnitOfWork;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.POST;
@@ -17,9 +18,12 @@ import jakarta.ws.rs.core.Response;
 @Path("/auth")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
-
+@Tag(
+        name = "Authentication",
+        description = "Authentication APIs"
+)
 public class AuthResource {
-    private AuthService authService;
+    private final AuthService authService;
 
     public AuthResource(AuthService authService){
         this.authService = authService;

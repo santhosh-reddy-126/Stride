@@ -5,7 +5,7 @@ package com.project.taskmanager;
  */
 
 import com.project.taskmanager.DAO.UserDAO;
-import com.project.taskmanager.Exception.UserExceptionMapper;
+import com.project.taskmanager.Exception.BusinessExceptionMapper;
 import com.project.taskmanager.model.User;
 import com.project.taskmanager.resource.AuthResource;
 import com.project.taskmanager.resource.HelloResource;
@@ -71,7 +71,7 @@ public class TaskManagerApp
 
         environment.jersey().register(new HelloResource());
         environment.jersey()
-                .register(new UserExceptionMapper());
+                .register(new BusinessExceptionMapper());
 
         UserDAO userDAO = new UserDAO(hibernateBundle.getSessionFactory());
         UserService userService = new UserService(userDAO);

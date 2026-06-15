@@ -1,6 +1,7 @@
 package com.project.taskmanager.model;
 
 import jakarta.persistence.*;
+import java.time.Instant;
 
 @Entity
 @Table(name = "users")
@@ -12,19 +13,54 @@ public class User {
 
     private String name;
 
-    @Column(unique = true, nullable = false)
+    @Column(
+            unique = true,
+            nullable = false
+    )
     private String email;
 
-    @Column(name = "password_hash")
+    @Column(
+            name = "password_hash",
+            nullable = false
+    )
     private String passwordHash;
+
+    @Column(
+            name = "created_at",
+            nullable = false,
+            updatable = false
+    )
+    private Instant createdAt;
+
+    @Column(
+            name = "updated_at",
+            nullable = false
+    )
+    private Instant updatedAt;
 
     public User() {
     }
 
-    public User(String name, String email, String passwordHash) {
+    public User(
+            String name,
+            String email,
+            String passwordHash
+    ) {
         this.name = name;
         this.email = email;
         this.passwordHash = passwordHash;
+    }
+
+    @PrePersist
+    public void prePersist() {
+        Instant now = Instant.now();
+        createdAt = now;
+        updatedAt = now;
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        updatedAt = Instant.now();
     }
 
     public Long getId() {
@@ -35,23 +71,39 @@ public class User {
         return name;
     }
 
-    public String getEmail() {
-        return email;
-    }
-
-    public String getPasswordHash() {
-        return passwordHash;
-    }
-
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getEmail() {
+        return email;
     }
 
     public void setEmail(String email) {
         this.email = email;
     }
 
+    public String getPasswordHash() {
+        return passwordHash;
+    }
+
     public void setPasswordHash(String passwordHash) {
         this.passwordHash = passwordHash;
+    }
+
+    public Instant getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Instant createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Instant getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(Instant updatedAt) {
+        this.updatedAt = updatedAt;
     }
 }
