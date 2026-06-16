@@ -4,13 +4,17 @@ package com.project.taskmanager;
  * Hello world!
  */
 
+import com.project.taskmanager.DAO.TaskDAO;
 import com.project.taskmanager.DAO.UserDAO;
 import com.project.taskmanager.Exception.BusinessExceptionMapper;
+import com.project.taskmanager.model.Task;
 import com.project.taskmanager.model.User;
 import com.project.taskmanager.resource.AuthResource;
 import com.project.taskmanager.resource.HelloResource;
 
+import com.project.taskmanager.resource.TaskResource;
 import com.project.taskmanager.service.AuthService;
+import com.project.taskmanager.service.TaskService;
 import com.project.taskmanager.service.UserService;
 import io.dropwizard.core.Application;
 import io.dropwizard.core.setup.Bootstrap;
@@ -25,7 +29,8 @@ public class TaskManagerApp
 
     private final HibernateBundle<TaskManagerConfiguration>
             hibernateBundle =
-            new HibernateBundle<>(User.class) {
+            new HibernateBundle<>(User.class,
+                    Task.class) {
 
                 @Override
                 public DataSourceFactory getDataSourceFactory(
@@ -74,8 +79,19 @@ public class TaskManagerApp
                 .register(new BusinessExceptionMapper());
 
         UserDAO userDAO = new UserDAO(hibernateBundle.getSessionFactory());
+        TaskDAO taskDAO = new TaskDAO(hibernateBundle.getSessionFactory());
+
+
+
+
         UserService userService = new UserService(userDAO);
         AuthService authService = new AuthService(userService);
+        TaskService taskService = new TaskService(taskDAO);
+
+
+
         environment.jersey().register(new AuthResource(authService));
+        environment.jersey().register(new TaskResource(taskService));
+
     }
 }

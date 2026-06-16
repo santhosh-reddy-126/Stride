@@ -15,6 +15,11 @@ public enum ErrorCode {
     INVALID_CREDENTIALS(
             401,
             "Invalid email or password"
+    ),
+
+    TASK_NOT_FOUND(
+            404,
+            "Task not found"
     );
 
 
