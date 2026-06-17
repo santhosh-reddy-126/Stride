@@ -3,6 +3,7 @@ package com.project.taskmanager.service;
 import com.project.taskmanager.DAO.TaskDAO;
 import com.project.taskmanager.DTO.Request.TaskRequest;
 import com.project.taskmanager.DTO.Response.TaskResponse;
+import com.project.taskmanager.DTO.Response.UserTasks;
 import com.project.taskmanager.Exception.BusinessException;
 import com.project.taskmanager.Exception.ErrorCode;
 import com.project.taskmanager.Mapper.TaskMapper;
@@ -30,5 +31,9 @@ public class TaskService {
         );
 
         return TaskMapper.toResponse(task);
+    }
+
+    public UserTasks getUserTasks(Long userId){
+        return TaskMapper.toUserTasksResponse(userId, taskDAO.findTasksByUserId(userId));
     }
 }

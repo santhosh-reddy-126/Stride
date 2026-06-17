@@ -114,15 +114,6 @@ button {
   justify-content: center;
   background: #f8fafc;
   padding: 40px;
-  flex: 1;
-}
-
-.auth-card-wrapper {
-  width: 100%;
-  max-width: 480px;
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
 }
 
 .auth-topbar {
@@ -130,7 +121,7 @@ button {
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  padding: 0 8px;
+  margin-bottom: 32px;
 }
 
 .auth-topbar span {

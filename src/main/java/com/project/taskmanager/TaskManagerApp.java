@@ -9,9 +9,11 @@ import com.project.taskmanager.DAO.UserDAO;
 import com.project.taskmanager.Exception.BusinessExceptionMapper;
 import com.project.taskmanager.JWT.JWTAuthenticator;
 import com.project.taskmanager.JWT.UserPrincipal;
+import com.project.taskmanager.filter.CorsFilter;
 import com.project.taskmanager.model.Task;
 import com.project.taskmanager.model.User;
 import com.project.taskmanager.resource.AuthResource;
+import com.project.taskmanager.resource.CorsResource;
 import com.project.taskmanager.resource.HelloResource;
 
 import com.project.taskmanager.resource.TaskResource;
@@ -79,6 +81,8 @@ public class TaskManagerApp
             TaskManagerConfiguration configuration,
             Environment environment) {
 
+        environment.jersey().register(new CorsFilter());
+        environment.jersey().register(new CorsResource());
         environment.jersey().register(new HelloResource());
         environment.jersey()
                 .register(new BusinessExceptionMapper());

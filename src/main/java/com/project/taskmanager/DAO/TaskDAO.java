@@ -21,7 +21,7 @@ public class TaskDAO extends AbstractDAO<Task> {
         return Optional.ofNullable(get(taskId));
     }
 
-    public List<Task> findTasksByUserId(String userId){
+    public List<Task> findTasksByUserId(Long userId){
         List<Task> tasks = currentSession()
                 .createQuery("FROM Task t where t.userId=:userId")
                 .setParameter("userId",userId)
