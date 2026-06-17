@@ -1,17 +1,27 @@
 package com.project.taskmanager.DTO.Response;
 
-public class UserResponse {
+public class LoginResponse {
 
     private String name;
     private String email;
+    private String token;
 
-    public UserResponse(String name,String email){
+    public LoginResponse(String name, String email, String token){
         this.name = name;
         this.email = email;
+        this.token = token;
     }
 
     public String getName() {
         return name;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 
     public void setName(String name) {

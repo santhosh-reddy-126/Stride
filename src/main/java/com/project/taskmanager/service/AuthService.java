@@ -2,11 +2,12 @@ package com.project.taskmanager.service;
 
 import com.project.taskmanager.DTO.Request.LoginRequest;
 import com.project.taskmanager.DTO.Request.SignUpRequest;
-import com.project.taskmanager.DTO.Response.UserResponse;
+import com.project.taskmanager.DTO.Response.LoginResponse;
 import com.project.taskmanager.Exception.BusinessException;
 import com.project.taskmanager.Exception.ErrorCode;
 import com.project.taskmanager.Mapper.UserMapper;
 import com.project.taskmanager.Utils.AuthUtils;
+import com.project.taskmanager.Utils.JWUtils;
 import com.project.taskmanager.model.User;
 
 import java.util.Optional;
@@ -19,7 +20,7 @@ public class AuthService {
         this.userService = userService;
     }
 
-    public UserResponse signUp(SignUpRequest signUpRequest){
+    public Boolean signUp(SignUpRequest signUpRequest){
 
         if(userService.getUserByEmail(signUpRequest.getEmail()).isPresent()){
             throw new BusinessException(ErrorCode.USER_ALREADY_EXISTS);
@@ -32,20 +33,17 @@ public class AuthService {
         );
 
         User storedUser = userService.createUser(user);
-        return UserMapper.toResponse(storedUser);
+        return true;
     }
 
-    public UserResponse login(LoginRequest loginRequest){
+    public LoginResponse login(LoginRequest loginRequest){
 
-        Optional<User> storedUser = userService.getUserByEmail(loginRequest.getEmail());
-        if(storedUser.isEmpty()){
-            throw new BusinessException(ErrorCode.USER_NOT_FOUND);
-        }
+        User storedUser = userService.getUserByEmail(loginRequest.getEmail())
+                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
-        validatePassword(loginRequest, storedUser.get());
-        return UserMapper.toResponse(storedUser.get());
-
-
+        validatePassword(loginRequest, storedUser);
+        String token = JWUtils.generateToken(storedUser.getId(),storedUser.getEmail());
+        return UserMapper.toResponse(storedUser, token);
     }
 
     private void validatePassword(

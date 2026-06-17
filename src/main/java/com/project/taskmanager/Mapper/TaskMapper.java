@@ -15,6 +15,8 @@ public class TaskMapper {
 
     public static TaskResponse toResponse(Task task){
         return new TaskResponse(
+                task.getId(),
+                task.getUserId(),
                 task.getName(),
                 task.getDescription(),
                 task.getTaskStatus()

@@ -7,6 +7,8 @@ package com.project.taskmanager;
 import com.project.taskmanager.DAO.TaskDAO;
 import com.project.taskmanager.DAO.UserDAO;
 import com.project.taskmanager.Exception.BusinessExceptionMapper;
+import com.project.taskmanager.JWT.JWTAuthenticator;
+import com.project.taskmanager.JWT.UserPrincipal;
 import com.project.taskmanager.model.Task;
 import com.project.taskmanager.model.User;
 import com.project.taskmanager.resource.AuthResource;
@@ -16,6 +18,9 @@ import com.project.taskmanager.resource.TaskResource;
 import com.project.taskmanager.service.AuthService;
 import com.project.taskmanager.service.TaskService;
 import com.project.taskmanager.service.UserService;
+import io.dropwizard.auth.AuthDynamicFeature;
+import io.dropwizard.auth.AuthValueFactoryProvider;
+import io.dropwizard.auth.oauth.OAuthCredentialAuthFilter;
 import io.dropwizard.core.Application;
 import io.dropwizard.core.setup.Bootstrap;
 import io.dropwizard.core.setup.Environment;
@@ -77,6 +82,19 @@ public class TaskManagerApp
         environment.jersey().register(new HelloResource());
         environment.jersey()
                 .register(new BusinessExceptionMapper());
+
+        environment.jersey().register(
+                new AuthDynamicFeature(
+                        new OAuthCredentialAuthFilter.Builder<UserPrincipal>()
+                                .setAuthenticator(new JWTAuthenticator())
+                                .setPrefix("Bearer")
+                                .buildAuthFilter()
+                )
+        );
+
+        environment.jersey().register(
+                new AuthValueFactoryProvider.Binder<>(
+                        UserPrincipal.class));
 
         UserDAO userDAO = new UserDAO(hibernateBundle.getSessionFactory());
         TaskDAO taskDAO = new TaskDAO(hibernateBundle.getSessionFactory());
