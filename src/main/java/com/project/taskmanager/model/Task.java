@@ -30,7 +30,7 @@ public class Task {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "task_status")
-    private TaskStatus taskStatus = TaskStatus.CREATED;
+    private TaskStatus taskStatus;
 
     @Column(
             name = "created_at",

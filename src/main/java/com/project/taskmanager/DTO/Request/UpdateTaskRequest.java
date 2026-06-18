@@ -2,35 +2,23 @@ package com.project.taskmanager.DTO.Request;
 
 import com.project.taskmanager.model.enums.TaskStatus;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.ws.rs.DefaultValue;
+import jakarta.validation.constraints.NotNull;
 
-public class TaskRequest {
+public class UpdateTaskRequest {
 
-    private Long userId;
-
-    @NotBlank(message = "Task Name is required")
     private String name;
 
     private String description;
 
     private TaskStatus taskStatus;
 
-    public TaskRequest(){
+    public UpdateTaskRequest(){
     }
 
-    public TaskRequest(Long userId, String description, String name, TaskStatus taskStatus) {
-        this.userId = userId;
+    public UpdateTaskRequest(String description, String name, TaskStatus taskStatus) {
         this.description = description;
         this.name = name;
         this.taskStatus = taskStatus;
-    }
-
-    public Long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
     }
 
     public String getName() {

@@ -1,7 +1,8 @@
 package com.project.taskmanager.resource;
 
 
-import com.project.taskmanager.DTO.Request.TaskRequest;
+import com.project.taskmanager.DTO.Request.CreateTaskRequest;
+import com.project.taskmanager.DTO.Request.UpdateTaskRequest;
 import com.project.taskmanager.JWT.UserPrincipal;
 import com.project.taskmanager.service.TaskService;
 import io.dropwizard.auth.Auth;
@@ -42,17 +43,28 @@ public class TaskResource {
     @UnitOfWork
     @Operation(summary = "Create a task")
     @SecurityRequirement(name = "bearerAuth")
-    public Response createTask(@Parameter(hidden = true) @Auth UserPrincipal user, @Valid TaskRequest taskRequest){
-        taskRequest.setUserId(user.getUserId());
-        return Response.status(200).entity(taskService.createTask(taskRequest)).build();
+    public Response createTask(@Parameter(hidden = true) @Auth UserPrincipal user, @Valid CreateTaskRequest createTaskRequest){
+        createTaskRequest.setUserId(user.getUserId());
+        return Response.status(201).entity(taskService.createTask(createTaskRequest)).build();
     }
 
     @GET
+    @Path("/{taskId}")
     @UnitOfWork
     @Operation(summary = "Get a task")
     @SecurityRequirement(name = "bearerAuth")
-    public Response getTask(@Parameter(hidden = true) @Auth UserPrincipal user, @QueryParam("taskId") Long taskId){
+    public Response getTask(@Parameter(hidden = true) @Auth UserPrincipal user, @PathParam("taskId") Long taskId){
         return Response.status(200).entity(taskService.getTask(taskId)).build();
+    }
+
+
+    @PATCH
+    @Path("/{taskId}")
+    @UnitOfWork
+    @Operation(summary = "Update a task")
+    @SecurityRequirement(name = "bearerAuth")
+    public Response updateTask(@Parameter(hidden = true) @Auth UserPrincipal user,@PathParam("taskId") Long taskId, @Valid UpdateTaskRequest updateTaskRequest){
+        return Response.status(200).entity(taskService.updateTask(taskId, updateTaskRequest)).build();
     }
 
 
@@ -63,6 +75,15 @@ public class TaskResource {
     @SecurityRequirement(name = "bearerAuth")
     public Response getUserTasks(@Parameter(hidden = true) @Auth UserPrincipal user){
         return Response.status(200).entity(taskService.getUserTasks(user.getUserId())).build();
+    }
+
+    @DELETE
+    @Path("/{taskId}")
+    @UnitOfWork
+    @Operation(summary = "Delete a task")
+    @SecurityRequirement(name = "bearerAuth")
+    public Response deleteTask(@Parameter(hidden = true) @Auth UserPrincipal user, @PathParam("taskId") Long taskId){
+        return Response.status(200).entity(taskService.deleteTask(taskId)).build();
     }
 
 

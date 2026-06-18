@@ -1,6 +1,6 @@
 package com.project.taskmanager.Mapper;
 
-import com.project.taskmanager.DTO.Request.TaskRequest;
+import com.project.taskmanager.DTO.Request.CreateTaskRequest;
 import com.project.taskmanager.DTO.Response.TaskResponse;
 import com.project.taskmanager.DTO.Response.UserTasks;
 import com.project.taskmanager.model.Task;
@@ -10,11 +10,11 @@ import java.util.List;
 
 public class TaskMapper {
 
-    public static Task toEntity(TaskRequest taskRequest){
-        return new Task(taskRequest.getUserId(),
-                taskRequest.getName(),
-                taskRequest.getDescription(),
-                taskRequest.getTaskStatus());
+    public static Task toEntity(CreateTaskRequest createTaskRequest){
+        return new Task(createTaskRequest.getUserId(),
+                createTaskRequest.getName(),
+                createTaskRequest.getDescription(),
+                createTaskRequest.getTaskStatus());
     }
 
     public static TaskResponse toResponse(Task task){

@@ -3,6 +3,7 @@ package com.project.taskmanager.service;
 import com.project.taskmanager.DTO.Request.LoginRequest;
 import com.project.taskmanager.DTO.Request.SignUpRequest;
 import com.project.taskmanager.DTO.Response.LoginResponse;
+import com.project.taskmanager.DTO.Response.SuccessResponse;
 import com.project.taskmanager.Exception.BusinessException;
 import com.project.taskmanager.Exception.ErrorCode;
 import com.project.taskmanager.Mapper.UserMapper;
@@ -20,7 +21,7 @@ public class AuthService {
         this.userService = userService;
     }
 
-    public Boolean signUp(SignUpRequest signUpRequest){
+    public SuccessResponse signUp(SignUpRequest signUpRequest){
 
         if(userService.getUserByEmail(signUpRequest.getEmail()).isPresent()){
             throw new BusinessException(ErrorCode.USER_ALREADY_EXISTS);
@@ -33,7 +34,7 @@ public class AuthService {
         );
 
         User storedUser = userService.createUser(user);
-        return true;
+        return new SuccessResponse(true);
     }
 
     public LoginResponse login(LoginRequest loginRequest){
