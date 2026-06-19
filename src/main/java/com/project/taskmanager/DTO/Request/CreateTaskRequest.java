@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 public class CreateTaskRequest {
-    @NotNull(message = "userId mapping cannot be null")
+
     private Long userId;
 
     @NotBlank(message = "Task Name is required")
