@@ -90,6 +90,11 @@ body {
   min-height: 100vh;
 }
 
+body.is-dragging,
+body.is-dragging * {
+  cursor: move !important;
+}
+
 #root {
   min-height: 100vh;
   display: flex;

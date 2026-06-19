@@ -40,13 +40,13 @@ const KanbanBoard = memo(function KanbanBoard({ tasks, onEdit, onDelete, onMoveT
 
   const handleDragStart = useCallback((event) => {
     setActiveId(event.active.id);
-    document.body.style.cursor = 'grabbing';
+    document.body.classList.add('is-dragging');
   }, []);
 
   const handleDragEnd = useCallback(
     async (event) => {
       const { active, over } = event;
-      document.body.style.cursor = '';
+      document.body.classList.remove('is-dragging');
       setActiveId(null);
 
       if (!over) return;
@@ -83,7 +83,7 @@ const KanbanBoard = memo(function KanbanBoard({ tasks, onEdit, onDelete, onMoveT
   );
 
   const handleDragCancel = useCallback(() => {
-    document.body.style.cursor = '';
+    document.body.classList.remove('is-dragging');
     setActiveId(null);
   }, []);
 
