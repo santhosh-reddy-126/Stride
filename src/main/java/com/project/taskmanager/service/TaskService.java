@@ -10,6 +10,8 @@ import com.project.taskmanager.Exception.BusinessException;
 import com.project.taskmanager.Exception.ErrorCode;
 import com.project.taskmanager.Mapper.TaskMapper;
 import com.project.taskmanager.model.Task;
+import com.project.taskmanager.model.enums.DueStatus;
+import com.project.taskmanager.model.enums.Priority;
 import com.project.taskmanager.model.enums.TaskStatus;
 
 public class TaskService {
@@ -36,8 +38,8 @@ public class TaskService {
         return TaskMapper.toResponse(task);
     }
 
-    public UserTasks getUserTasks(Long userId){
-        return TaskMapper.toUserTasksResponse(userId, taskDAO.findTasksByUserId(userId));
+    public UserTasks getUserTasks(Long userId, TaskStatus taskStatus, Priority priority, DueStatus dueStatus){
+        return TaskMapper.toUserTasksResponse(userId, taskDAO.findTasksByUserId(userId, taskStatus, priority, dueStatus));
     }
 
     public TaskResponse updateTask(Long taskId, UpdateTaskRequest updateTaskRequest){

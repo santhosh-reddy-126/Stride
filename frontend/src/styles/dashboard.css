@@ -117,19 +117,24 @@
 .stat-card-icon.in-progress { background: var(--accent-bg); color: var(--accent); }
 .stat-card-icon.completed { background: var(--success-bg); color: var(--success); }
 
-/* Action Bar */
-.action-bar {
+/* Filter Section — two-row layout */
+.filter-section {
+  margin-top: 28px;
+  margin-bottom: 24px;
+}
+
+/* Row 1: Search + Clear + Actions */
+.filter-bar {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  margin-bottom: 24px;
+  gap: 12px;
   flex-wrap: wrap;
 }
 
 .search-wrapper {
   position: relative;
   flex: 1;
+  min-width: 200px;
   max-width: 400px;
 }
 
@@ -154,6 +159,10 @@
   transition: all var(--transition);
 }
 
+.search-wrapper input:hover {
+  border-color: var(--accent);
+}
+
 .search-wrapper input:focus {
   border-color: var(--accent);
   box-shadow: 0 0 0 3px var(--accent-bg);
@@ -163,12 +172,37 @@
   color: var(--text-tertiary);
 }
 
+.clear-filters-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-card);
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition);
+  white-space: nowrap;
+  min-height: 38px;
+}
+
+.clear-filters-btn:hover {
+  border-color: var(--danger);
+  color: var(--danger);
+  background: var(--danger-bg);
+}
+
 .action-bar-right {
   display: flex;
   align-items: center;
   gap: 12px;
+  margin-left: auto;
 }
 
+/* View Toggle */
 .view-toggle {
   display: flex;
   background: var(--bg-tertiary);
@@ -198,42 +232,78 @@
   color: var(--text-primary);
 }
 
-.filter-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 14px;
-  border-radius: 20px;
-  font-size: 13px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all var(--transition);
-  border: 1.5px solid var(--border);
-  background: transparent;
-  color: var(--text-secondary);
-}
-
-.filter-badge:hover {
-  border-color: var(--accent);
-  color: var(--accent);
-}
-
-.filter-badge.active {
-  background: var(--accent);
-  color: white;
-  border-color: var(--accent);
-}
-
-.filter-badge.active.created { background: var(--info); border-color: var(--info); }
-.filter-badge.active.in_progress { background: var(--accent); border-color: var(--accent); }
-.filter-badge.active.completed { background: var(--success); border-color: var(--success); }
-
-.filters-row {
+/* Row 2: Dropdown filters */
+.filter-dropdown-row {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
+  margin-top: 12px;
   flex-wrap: wrap;
-  margin-bottom: 24px;
+}
+
+.filter-group {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.filter-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-tertiary);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.filter-group .filter-select {
+  padding-left: 34px;
+}
+
+/* Unified Select Styling — used by filter-select and form-field select */
+.filter-select,
+.form-field select {
+  padding: 8px 36px 8px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-card);
+  color: var(--text-primary);
+  font-size: 13px;
+  font-weight: 500;
+  outline: none;
+  cursor: pointer;
+  transition: all var(--transition);
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  min-height: 38px;
+}
+
+.filter-select:hover,
+.form-field select:hover {
+  border-color: var(--accent);
+}
+
+.filter-select:focus,
+.form-field select:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-bg);
+}
+
+.filter-select option,
+.form-field select option {
+  background: var(--bg-card);
+  color: var(--text-primary);
+}
+
+.filter-select option:disabled {
+  color: var(--text-tertiary);
+}
+
+.form-field input[type="datetime-local"] {
+  min-height: 38px;
 }
 
 /* Task List */
@@ -276,6 +346,7 @@
   gap: 16px;
   padding: 18px 24px;
   border-bottom: 1px solid var(--border-light);
+  border-left: 3px solid transparent;
   transition: all var(--transition);
   cursor: pointer;
   position: relative;
@@ -287,6 +358,10 @@
 
 .task-card:hover {
   background: var(--bg-secondary);
+}
+
+.task-card.overdue {
+  border-left-color: #dc2626;
 }
 
 .task-card.completed .task-title {
@@ -367,6 +442,56 @@
 .status-badge.created { background: var(--info-bg); color: var(--info); }
 .status-badge.in_progress { background: var(--accent-bg); color: var(--accent); }
 .status-badge.completed { background: var(--success-bg); color: var(--success); }
+
+.priority-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.priority-badge.low { background: #f0fdf4; color: #16a34a; }
+.priority-badge.medium { background: #fef9c3; color: #ca8a04; }
+.priority-badge.high { background: #fef2f2; color: #dc2626; }
+
+[data-theme="dark"] .priority-badge.low { background: rgba(22, 163, 74, 0.15); color: #4ade80; }
+[data-theme="dark"] .priority-badge.medium { background: rgba(202, 138, 4, 0.15); color: #facc15; }
+[data-theme="dark"] .priority-badge.high { background: rgba(220, 38, 38, 0.15); color: #f87171; }
+
+.due-date {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  color: var(--text-secondary);
+  padding: 3px 8px;
+  border-radius: 12px;
+  background: var(--bg-tertiary);
+}
+
+.due-date.overdue {
+  color: #dc2626;
+  background: #fef2f2;
+}
+
+[data-theme="dark"] .due-date.overdue {
+  color: #f87171;
+  background: rgba(220, 38, 38, 0.15);
+}
+
+.due-date.today {
+  color: var(--accent);
+  background: var(--accent-bg);
+  font-weight: 600;
+}
+
+[data-theme="dark"] .due-date.today {
+  color: #a5b4fc;
+  background: rgba(99, 102, 241, 0.15);
+}
 
 .task-actions {
   display: flex;
@@ -464,6 +589,7 @@
 .kanban-card {
   background: var(--bg-card);
   border: 1px solid var(--border);
+  border-left: 3px solid transparent;
   border-radius: var(--radius);
   padding: 16px;
   cursor: pointer;
@@ -472,6 +598,10 @@
   touch-action: none;
   user-select: none;
   position: relative;
+}
+
+.kanban-card.overdue {
+  border-left-color: #dc2626;
 }
 
 .kanban-card:active {
@@ -519,6 +649,20 @@
   margin-bottom: 10px;
 }
 
+.kanban-card-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+
+.kanban-card-meta .priority-badge,
+.kanban-card-meta .due-date {
+  font-size: 11px;
+  padding: 2px 8px;
+}
+
 .kanban-card-footer {
   display: flex;
   align-items: center;
@@ -553,15 +697,17 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 10px 20px;
+  padding: 9px 18px;
   background: var(--accent);
   color: white;
   border: none;
   border-radius: var(--radius);
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
   cursor: pointer;
   transition: all var(--transition);
+  white-space: nowrap;
+  min-height: 38px;
 }
 
 .create-task-btn:hover {
@@ -831,6 +977,17 @@
   padding: 24px 28px;
 }
 
+.form-row {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.form-row .form-field {
+  flex: 1;
+  margin-bottom: 0;
+}
+
 .form-field {
   display: flex;
   flex-direction: column;
@@ -845,8 +1002,7 @@
 }
 
 .form-field input,
-.form-field textarea,
-.form-field select {
+.form-field textarea {
   padding: 10px 14px;
   border: 1.5px solid var(--border);
   border-radius: var(--radius);
@@ -858,10 +1014,35 @@
 }
 
 .form-field input:focus,
-.form-field textarea:focus,
-.form-field select:focus {
+.form-field textarea:focus {
   border-color: var(--accent);
   box-shadow: 0 0 0 3px var(--accent-bg);
+}
+
+.form-field input:hover,
+.form-field textarea:hover {
+  border-color: var(--accent);
+}
+
+.form-field input[type="datetime-local"] {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  color-scheme: var(--color-scheme, light);
+  min-height: 38px;
+  cursor: text;
+  font-family: inherit;
+}
+
+.form-field input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  opacity: 0.6;
+  filter: var(--datetime-icon-filter, none);
+  padding: 4px;
+}
+
+.form-field input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
+  opacity: 1;
 }
 
 .form-field textarea {
@@ -870,12 +1051,7 @@
 }
 
 .form-field select {
-  cursor: pointer;
-  appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 12px center;
-  padding-right: 40px;
+  min-height: 38px;
 }
 
 .form-actions {
@@ -921,15 +1097,26 @@
   .stat-card-info .stat-value {
     font-size: 24px;
   }
-  .action-bar {
+  .filter-bar {
     flex-direction: column;
     align-items: stretch;
   }
   .search-wrapper {
     max-width: none;
   }
+  .filter-dropdown-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .filter-group {
+    flex: 1;
+  }
+  .filter-group .filter-select {
+    width: 100%;
+  }
   .action-bar-right {
-    justify-content: space-between;
+    justify-content: flex-end;
+    width: 100%;
   }
   .analytics-grid {
     grid-template-columns: 1fr;

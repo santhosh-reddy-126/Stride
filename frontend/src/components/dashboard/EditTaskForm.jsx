@@ -1,7 +1,8 @@
 import { useForm } from 'react-hook-form';
 import { motion } from 'framer-motion';
 import { Loader2 } from 'lucide-react';
-import { STATUS_OPTIONS } from '../../utils/constants';
+import { STATUS_OPTIONS, PRIORITY_OPTIONS } from '../../utils/constants';
+import { arrayToDatetimeLocalValue, datetimeLocalToArray } from '../../utils/helpers';
 
 export default function EditTaskForm({ task, onSubmit, onCancel, loading }) {
   const {
@@ -13,6 +14,8 @@ export default function EditTaskForm({ task, onSubmit, onCancel, loading }) {
       name: task.name || '',
       description: task.description || '',
       taskStatus: task.taskStatus || '',
+      taskPriority: task.taskPriority || '',
+      dueDate: arrayToDatetimeLocalValue(task.dueDate),
     },
   });
 
@@ -23,6 +26,14 @@ export default function EditTaskForm({ task, onSubmit, onCancel, loading }) {
       updates.description = data.description;
     }
     if (data.taskStatus !== task.taskStatus) updates.taskStatus = data.taskStatus;
+    if ((data.taskPriority || null) !== (task.taskPriority || null)) {
+      updates.taskPriority = data.taskPriority || null;
+    }
+    const newDueDate = datetimeLocalToArray(data.dueDate);
+    const oldDueDate = Array.isArray(task.dueDate) ? task.dueDate : null;
+    if (JSON.stringify(newDueDate) !== JSON.stringify(oldDueDate)) {
+      updates.dueDate = newDueDate;
+    }
     onSubmit(updates);
   };
 
@@ -55,6 +66,28 @@ export default function EditTaskForm({ task, onSubmit, onCancel, loading }) {
           rows={3}
           {...register('description')}
         />
+      </div>
+
+      <div className="form-row">
+        <div className="form-field">
+          <label htmlFor="editTaskPriority">Priority</label>
+          <select id="editTaskPriority" {...register('taskPriority')}>
+            {PRIORITY_OPTIONS.map((opt) => (
+              <option key={opt.value} value={opt.value}>
+                {opt.label}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className="form-field">
+          <label htmlFor="editTaskDueDate">Due Date & Time</label>
+          <input
+            id="editTaskDueDate"
+            type="datetime-local"
+            {...register('dueDate')}
+          />
+        </div>
       </div>
 
       <div className="form-field">

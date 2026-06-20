@@ -22,8 +22,14 @@ export async function createTaskApi(taskData) {
   return response.json();
 }
 
-export async function getMyTasksApi() {
-  const response = await fetch(`${API_BASE_URL}/task/myTasks`, {
+export async function getMyTasksApi(params = {}) {
+  const query = new URLSearchParams();
+  if (params.status) query.append('status', params.status);
+  if (params.priority) query.append('priority', params.priority);
+  if (params.dueStatus) query.append('dueStatus', params.dueStatus);
+  const qs = query.toString();
+  const url = `${API_BASE_URL}/task/myTasks${qs ? `?${qs}` : ''}`;
+  const response = await fetch(url, {
     method: 'GET',
     headers: getAuthHeaders(),
   });

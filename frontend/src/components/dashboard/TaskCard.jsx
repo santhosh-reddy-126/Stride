@@ -1,13 +1,22 @@
+import { forwardRef } from 'react';
 import { motion } from 'framer-motion';
 import { Edit3, Trash2 } from 'lucide-react';
-import { STATUS_LABELS } from '../../utils/constants';
+import { STATUS_LABELS, PRIORITY_LABELS } from '../../utils/constants';
+import { formatDueDateLabel, isOverdue, isToday } from '../../utils/helpers';
 
-export default function TaskCard({ task, onEdit, onDelete }) {
+const TaskCard = forwardRef(function TaskCard({ task, onEdit, onDelete }, ref) {
+  const isCompleted = task.taskStatus === 'COMPLETED';
   const statusClass = task.taskStatus?.toLowerCase();
+  const priorityClass = task.taskPriority?.toLowerCase();
+  const dueDateArr = task.dueDate;
+  const overdue = isOverdue(dueDateArr, task.taskStatus);
+  const today = !isCompleted && isToday(dueDateArr);
+  const dueLabel = formatDueDateLabel(dueDateArr, task.taskStatus);
 
   return (
     <motion.div
-      className="task-card"
+      ref={ref}
+      className={`task-card${overdue ? ' overdue' : ''}${isCompleted ? ' completed' : ''}`}
       layout
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
@@ -18,9 +27,19 @@ export default function TaskCard({ task, onEdit, onDelete }) {
         <div className="task-title">{task.name}</div>
         {task.description && <div className="task-description">{task.description}</div>}
         <div className="task-meta">
+          {task.taskPriority && (
+            <span className={`priority-badge ${priorityClass}`}>
+              {PRIORITY_LABELS[task.taskPriority] || task.taskPriority}
+            </span>
+          )}
           <span className={`status-badge ${statusClass}`}>
             {STATUS_LABELS[task.taskStatus] || task.taskStatus}
           </span>
+          {dueLabel && (
+            <span className={`due-date${overdue ? ' overdue' : ''}${today ? ' today' : ''}`}>
+              {dueLabel}
+            </span>
+          )}
         </div>
       </div>
       <div className="task-actions">
@@ -41,4 +60,6 @@ export default function TaskCard({ task, onEdit, onDelete }) {
       </div>
     </motion.div>
   );
-}
+});
+
+export default TaskCard;

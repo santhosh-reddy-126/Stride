@@ -15,7 +15,7 @@ export default function AuthLayout({ children }) {
           <div className="logo-icon">
             <ClipboardCheck size={32} />
           </div>
-          <h1>Task Manager Pro</h1>
+          <h1>Stride</h1>
           <p>Streamline your workflow, boost productivity, and never miss a deadline.</p>
           <div className="feature-grid">
             {features.map((f) => (

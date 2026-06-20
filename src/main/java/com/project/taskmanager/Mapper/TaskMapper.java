@@ -14,7 +14,10 @@ public class TaskMapper {
         return new Task(createTaskRequest.getUserId(),
                 createTaskRequest.getName(),
                 createTaskRequest.getDescription(),
-                createTaskRequest.getTaskStatus());
+                createTaskRequest.getTaskStatus(),
+                createTaskRequest.getTaskPriority(),
+                createTaskRequest.getDueDate()
+                );
     }
 
     public static TaskResponse toResponse(Task task){
@@ -23,7 +26,9 @@ public class TaskMapper {
                 task.getUserId(),
                 task.getName(),
                 task.getDescription(),
-                task.getTaskStatus()
+                task.getTaskStatus(),
+                task.getTaskPriority(),
+                task.getDueDate()
         );
     }
 

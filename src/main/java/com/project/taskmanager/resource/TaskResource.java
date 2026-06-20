@@ -4,6 +4,9 @@ package com.project.taskmanager.resource;
 import com.project.taskmanager.DTO.Request.CreateTaskRequest;
 import com.project.taskmanager.DTO.Request.UpdateTaskRequest;
 import com.project.taskmanager.JWT.UserPrincipal;
+import com.project.taskmanager.model.enums.DueStatus;
+import com.project.taskmanager.model.enums.Priority;
+import com.project.taskmanager.model.enums.TaskStatus;
 import com.project.taskmanager.service.TaskService;
 import io.dropwizard.auth.Auth;
 import io.dropwizard.hibernate.UnitOfWork;
@@ -73,8 +76,8 @@ public class TaskResource {
     @Operation(summary = "Get my tasks")
     @Path("/myTasks")
     @SecurityRequirement(name = "bearerAuth")
-    public Response getUserTasks(@Parameter(hidden = true) @Auth UserPrincipal user){
-        return Response.status(200).entity(taskService.getUserTasks(user.getUserId())).build();
+    public Response getUserTasks(@Parameter(hidden = true) @Auth UserPrincipal user, @QueryParam("status") TaskStatus taskStatus, @QueryParam("priority") Priority taskPriority, @QueryParam("dueStatus")DueStatus dueStatus){
+        return Response.status(200).entity(taskService.getUserTasks(user.getUserId(), taskStatus, taskPriority, dueStatus)).build();
     }
 
     @DELETE

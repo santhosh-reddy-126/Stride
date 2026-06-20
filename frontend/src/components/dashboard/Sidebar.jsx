@@ -45,7 +45,7 @@ export default function Sidebar({ collapsed, onToggle, mobileOpen, onMobileClose
             <div className="logo-icon">
               <ClipboardCheck size={18} />
             </div>
-            <span>Task Pro</span>
+            <span>Stride</span>
           </div>
           <button
             className="sidebar-toggle"

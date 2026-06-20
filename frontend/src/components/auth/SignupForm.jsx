@@ -41,7 +41,7 @@ export default function SignupForm() {
           <div className="logo-icon">
             <ClipboardCheck size={20} />
           </div>
-          <span>Task Manager Pro</span>
+          <span>Stride</span>
         </div>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -49,7 +49,7 @@ export default function SignupForm() {
           transition={{ duration: 0.3 }}
         >
           <h2>Create account</h2>
-          <p>Get started with Task Manager Pro</p>
+          <p>Get started with Stride</p>
 
           <form className="auth-form" onSubmit={handleSubmit(onSubmit)} noValidate>
             <div className="form-group">

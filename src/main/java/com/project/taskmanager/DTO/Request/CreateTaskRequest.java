@@ -1,8 +1,11 @@
 package com.project.taskmanager.DTO.Request;
 
+import com.project.taskmanager.model.enums.Priority;
 import com.project.taskmanager.model.enums.TaskStatus;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+
+import java.time.LocalDateTime;
 
 public class CreateTaskRequest {
 
@@ -18,14 +21,21 @@ public class CreateTaskRequest {
     @NotNull(message = "task status cannot be null")
     private TaskStatus taskStatus;
 
+    @NotNull(message = "task priority cannot be null")
+    private Priority taskPriority;
+
+    private LocalDateTime dueDate;
+
     public CreateTaskRequest(){
     }
 
-    public CreateTaskRequest(Long userId, String description, String name, TaskStatus taskStatus) {
+    public CreateTaskRequest(Long userId, String description, String name, TaskStatus taskStatus, Priority taskPriority, LocalDateTime dueDate) {
         this.userId = userId;
         this.description = description;
         this.name = name;
         this.taskStatus = taskStatus;
+        this.taskPriority = taskPriority;
+        this.dueDate = dueDate;
     }
 
     public Long getUserId() {
@@ -54,6 +64,22 @@ public class CreateTaskRequest {
 
     public TaskStatus getTaskStatus() {
         return taskStatus;
+    }
+
+    public Priority getTaskPriority() {
+        return taskPriority;
+    }
+
+    public void setTaskPriority(Priority taskPriority) {
+        this.taskPriority = taskPriority;
+    }
+
+    public LocalDateTime getDueDate() {
+        return dueDate;
+    }
+
+    public void setDueDate(LocalDateTime dueDate) {
+        this.dueDate = dueDate;
     }
 
     public void setTaskStatus(TaskStatus taskStatus) {

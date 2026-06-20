@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
 import { Plus, LayoutList, Columns } from 'lucide-react';
@@ -17,12 +17,14 @@ import { useAuth } from '../hooks/useAuth';
 
 export default function DashboardPage() {
   const { handleUnauthorized } = useAuth();
-  const { tasks, loading, addTask, editTask, removeTask, moveTask, getFilteredTasks, stats } =
+  const { tasks, loading, addTask, editTask, removeTask, moveTask, getFilteredTasks, stats, changeFilters } =
     useTasks(handleUnauthorized);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('ALL');
+  const [priorityFilter, setPriorityFilter] = useState('ALL');
+  const [dueStatusFilter, setDueStatusFilter] = useState('ALL');
   const [viewMode, setViewMode] = useState('list');
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [creating, setCreating] = useState(false);
@@ -31,13 +33,21 @@ export default function DashboardPage() {
   const [deletingTask, setDeletingTask] = useState(null);
   const [deleting, setDeleting] = useState(false);
 
-  const filteredTasks = getFilteredTasks(search, statusFilter);
+  useEffect(() => {
+    const params = {};
+    if (statusFilter !== 'ALL') params.status = statusFilter;
+    if (priorityFilter !== 'ALL') params.priority = priorityFilter;
+    if (dueStatusFilter !== 'ALL') params.dueStatus = dueStatusFilter;
+    changeFilters(params);
+  }, [statusFilter, priorityFilter, dueStatusFilter, changeFilters]);
+
+  const filteredTasks = getFilteredTasks(search);
 
   const handleCreateTask = useCallback(
-    async (name, description, taskStatus) => {
+    async (name, description, taskStatus, taskPriority, dueDate) => {
       setCreating(true);
       try {
-        await addTask(name, description, taskStatus);
+        await addTask(name, description, taskStatus, taskPriority, dueDate);
         toast.success('Task created successfully');
         setCreateModalOpen(false);
       } catch (err) {
@@ -118,51 +128,51 @@ export default function DashboardPage() {
 
             <StatsCards stats={stats} />
 
-            <div className="action-bar" style={{ marginTop: 28 }}>
-              <TaskFilters
-                search={search}
-                onSearchChange={setSearch}
-                statusFilter={statusFilter}
-                onStatusFilterChange={setStatusFilter}
-              />
-              <div className="action-bar-right">
-                <div className="view-toggle">
-                  <button
-                    className={viewMode === 'list' ? 'active' : ''}
-                    onClick={() => setViewMode('list')}
-                    aria-label="List view"
-                  >
-                    <LayoutList size={16} />
-                    List
-                  </button>
-                  <button
-                    className={viewMode === 'kanban' ? 'active' : ''}
-                    onClick={() => setViewMode('kanban')}
-                    aria-label="Kanban view"
-                  >
-                    <Columns size={16} />
-                    Board
-                  </button>
-                </div>
-                <button className="create-task-btn" onClick={() => setCreateModalOpen(true)}>
-                  <Plus size={18} />
-                  New Task
+            <TaskFilters
+              search={search}
+              onSearchChange={setSearch}
+              statusFilter={statusFilter}
+              onStatusFilterChange={setStatusFilter}
+              priorityFilter={priorityFilter}
+              onPriorityFilterChange={setPriorityFilter}
+              dueStatusFilter={dueStatusFilter}
+              onDueStatusFilterChange={setDueStatusFilter}
+            >
+              <div className="view-toggle">
+                <button
+                  className={viewMode === 'list' ? 'active' : ''}
+                  onClick={() => setViewMode('list')}
+                  aria-label="List view"
+                >
+                  <LayoutList size={16} />
+                  List
+                </button>
+                <button
+                  className={viewMode === 'kanban' ? 'active' : ''}
+                  onClick={() => setViewMode('kanban')}
+                  aria-label="Kanban view"
+                >
+                  <Columns size={16} />
+                  Board
                 </button>
               </div>
-            </div>
+              <button className="create-task-btn" onClick={() => setCreateModalOpen(true)}>
+                <Plus size={18} />
+                New Task
+              </button>
+            </TaskFilters>
 
             {viewMode === 'list' ? (
               <TaskList
-                tasks={tasks}
+                tasks={filteredTasks}
                 loading={loading}
                 search={search}
-                statusFilter={statusFilter}
                 onEdit={setEditingTask}
                 onDelete={setDeletingTask}
               />
             ) : (
               <KanbanBoard
-                tasks={tasks}
+                tasks={filteredTasks}
                 onEdit={setEditingTask}
                 onDelete={setDeletingTask}
                 onMoveTask={moveTask}

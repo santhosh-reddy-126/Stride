@@ -9,11 +9,11 @@ export function useTasks(onUnauthorized) {
   const tasksRef = useRef(tasks);
   tasksRef.current = tasks;
 
-  const loadTasks = useCallback(async () => {
+  const changeFilters = useCallback(async (params = {}) => {
+    setLoading(true);
+    setError(null);
     try {
-      setLoading(true);
-      setError(null);
-      const data = await fetchMyTasks();
+      const data = await fetchMyTasks(params);
       setTasks(Array.isArray(data) ? data : []);
     } catch (err) {
       if (err.message === 'Unauthorized') {
@@ -27,11 +27,11 @@ export function useTasks(onUnauthorized) {
   }, [onUnauthorized]);
 
   useEffect(() => {
-    loadTasks();
-  }, [loadTasks]);
+    changeFilters({});
+  }, [changeFilters]);
 
-  const addTask = useCallback(async (name, description, taskStatus) => {
-    const newTask = await createTask(name, description, taskStatus);
+  const addTask = useCallback(async (name, description, taskStatus, taskPriority, dueDate) => {
+    const newTask = await createTask(name, description, taskStatus, taskPriority, dueDate);
     setTasks((prev) => [newTask, ...prev]);
     return newTask;
   }, []);
@@ -62,15 +62,13 @@ export function useTasks(onUnauthorized) {
   }, [updateTask]);
 
   const getFilteredTasks = useCallback(
-    (search = '', statusFilter = 'ALL') => {
+    (search = '') => {
+      if (!search) return tasks;
       return tasks.filter((task) => {
-        const matchesSearch =
-          !search ||
+        return (
           task.name?.toLowerCase().includes(search.toLowerCase()) ||
-          task.description?.toLowerCase().includes(search.toLowerCase());
-        const matchesStatus =
-          statusFilter === 'ALL' || task.taskStatus === statusFilter;
-        return matchesSearch && matchesStatus;
+          task.description?.toLowerCase().includes(search.toLowerCase())
+        );
       });
     },
     [tasks]
@@ -86,7 +84,7 @@ export function useTasks(onUnauthorized) {
     tasks,
     loading,
     error,
-    loadTasks,
+    changeFilters,
     addTask,
     editTask,
     removeTask,

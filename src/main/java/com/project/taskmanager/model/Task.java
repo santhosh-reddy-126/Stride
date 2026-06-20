@@ -1,10 +1,12 @@
 package com.project.taskmanager.model;
 
+import com.project.taskmanager.model.enums.Priority;
 import com.project.taskmanager.model.enums.TaskStatus;
 import jakarta.persistence.*;
 import jakarta.ws.rs.DefaultValue;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 
 
 @Entity
@@ -32,6 +34,16 @@ public class Task {
     @Column(name = "task_status")
     private TaskStatus taskStatus;
 
+    @Enumerated(EnumType.STRING)
+    @Column(
+            name = "task_priority",
+            nullable = false
+    )
+    private Priority taskPriority;
+
+    @Column(name = "due_date")
+    private LocalDateTime dueDate;
+
     @Column(
             name = "created_at",
             nullable = false,
@@ -52,11 +64,15 @@ public class Task {
     public Task(Long userId,
                 String name,
                 String description,
-                TaskStatus taskStatus){
+                TaskStatus taskStatus,
+                Priority taskPriority,
+                LocalDateTime dueDate){
         this.userId = userId;
         this.name=name;
         this.description=description;
         this.taskStatus=taskStatus;
+        this.taskPriority=taskPriority;
+        this.dueDate=dueDate;
     }
 
     @PrePersist
@@ -121,5 +137,21 @@ public class Task {
 
     public void setCreatedAt(Instant createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public Priority getTaskPriority() {
+        return taskPriority;
+    }
+
+    public void setTaskPriority(Priority taskPriority) {
+        this.taskPriority = taskPriority;
+    }
+
+    public LocalDateTime getDueDate() {
+        return dueDate;
+    }
+
+    public void setDueDate(LocalDateTime dueDate) {
+        this.dueDate = dueDate;
     }
 }

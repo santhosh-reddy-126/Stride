@@ -39,7 +39,7 @@ export default function LoginForm() {
           <div className="logo-icon">
             <ClipboardCheck size={20} />
           </div>
-          <span>Task Manager Pro</span>
+          <span>Stride</span>
         </div>
         <motion.div
           initial={{ opacity: 0, y: 20 }}

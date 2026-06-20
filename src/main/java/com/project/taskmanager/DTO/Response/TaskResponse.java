@@ -1,6 +1,9 @@
 package com.project.taskmanager.DTO.Response;
 
+import com.project.taskmanager.model.enums.Priority;
 import com.project.taskmanager.model.enums.TaskStatus;
+
+import java.time.LocalDateTime;
 
 public class TaskResponse {
 
@@ -14,12 +17,18 @@ public class TaskResponse {
 
     private TaskStatus taskStatus;
 
-    public TaskResponse(Long taskId, Long userId, String name, String description, TaskStatus taskStatus) {
+    private Priority taskPriority;
+
+    private LocalDateTime dueDate;
+
+    public TaskResponse(Long taskId, Long userId, String name, String description, TaskStatus taskStatus, Priority taskPriority, LocalDateTime dueDate) {
         this.taskId = taskId;
         this.userId = userId;
         this.name = name;
         this.description = description;
         this.taskStatus = taskStatus;
+        this.taskPriority = taskPriority;
+        this.dueDate = dueDate;
     }
 
     public String getName() {
@@ -60,5 +69,21 @@ public class TaskResponse {
 
     public void setTaskStatus(TaskStatus taskStatus) {
         this.taskStatus = taskStatus;
+    }
+
+    public Priority getTaskPriority() {
+        return taskPriority;
+    }
+
+    public void setTaskPriority(Priority taskPriority) {
+        this.taskPriority = taskPriority;
+    }
+
+    public LocalDateTime getDueDate() {
+        return dueDate;
+    }
+
+    public void setDueDate(LocalDateTime dueDate) {
+        this.dueDate = dueDate;
     }
 }

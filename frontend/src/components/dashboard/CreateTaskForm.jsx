@@ -1,7 +1,8 @@
 import { useForm } from 'react-hook-form';
 import { motion } from 'framer-motion';
 import { Loader2 } from 'lucide-react';
-import { STATUS_OPTIONS, TASK_STATUS } from '../../utils/constants';
+import { STATUS_OPTIONS, PRIORITY_OPTIONS, TASK_STATUS } from '../../utils/constants';
+import { datetimeLocalToArray } from '../../utils/helpers';
 
 export default function CreateTaskForm({ onSubmit, onCancel, loading }) {
   const {
@@ -10,11 +11,18 @@ export default function CreateTaskForm({ onSubmit, onCancel, loading }) {
     formState: { errors },
     reset,
   } = useForm({
-    defaultValues: { taskStatus: TASK_STATUS.CREATED },
+    defaultValues: { taskStatus: TASK_STATUS.CREATED, taskPriority: '' },
   });
 
   const handleFormSubmit = async (data) => {
-    await onSubmit(data.name, data.description, data.taskStatus);
+    const dueDate = datetimeLocalToArray(data.dueDate);
+    await onSubmit(
+      data.name,
+      data.description,
+      data.taskStatus,
+      data.taskPriority || null,
+      dueDate
+    );
     reset();
   };
 
@@ -47,6 +55,28 @@ export default function CreateTaskForm({ onSubmit, onCancel, loading }) {
           rows={3}
           {...register('description')}
         />
+      </div>
+
+      <div className="form-row">
+        <div className="form-field">
+          <label htmlFor="taskPriority">Priority</label>
+          <select id="taskPriority" {...register('taskPriority')}>
+            {PRIORITY_OPTIONS.map((opt) => (
+              <option key={opt.value} value={opt.value}>
+                {opt.label}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className="form-field">
+          <label htmlFor="taskDueDate">Due Date & Time</label>
+          <input
+            id="taskDueDate"
+            type="datetime-local"
+            {...register('dueDate')}
+          />
+        </div>
       </div>
 
       <div className="form-field">
