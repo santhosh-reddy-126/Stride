@@ -1,4 +1,4 @@
-import { Search, X, Flag, CalendarClock, ListFilter } from 'lucide-react';
+import { Search, X, Flag, CalendarClock, ListFilter, FolderKanban } from 'lucide-react';
 import { TASK_STATUS, STATUS_FILTER_OPTIONS, PRIORITY_FILTER_OPTIONS, DUE_STATUS_FILTER_OPTIONS, DUE_STATUS } from '../../utils/constants';
 
 const DISABLED_DUE_STATUS_WHEN_COMPLETED = [DUE_STATUS.OVERDUE, DUE_STATUS.TODAY, DUE_STATUS.UPCOMING];
@@ -12,6 +12,9 @@ export default function TaskFilters({
   onPriorityFilterChange,
   dueStatusFilter,
   onDueStatusFilterChange,
+  projectFilter,
+  onProjectFilterChange,
+  projects = [],
   children,
 }) {
   const isCompleted = statusFilter === TASK_STATUS.COMPLETED;
@@ -27,9 +30,10 @@ export default function TaskFilters({
     onStatusFilterChange('ALL');
     onPriorityFilterChange('ALL');
     onDueStatusFilterChange('ALL');
+    if (onProjectFilterChange) onProjectFilterChange('ALL');
   };
 
-  const hasActiveFilters = statusFilter !== 'ALL' || priorityFilter !== 'ALL' || dueStatusFilter !== 'ALL';
+  const hasActiveFilters = statusFilter !== 'ALL' || priorityFilter !== 'ALL' || dueStatusFilter !== 'ALL' || (projectFilter && projectFilter !== 'ALL');
 
   return (
     <div className="filter-section">
@@ -94,6 +98,23 @@ export default function TaskFilters({
                 disabled={isCompleted && DISABLED_DUE_STATUS_WHEN_COMPLETED.includes(opt.value)}
               >
                 {opt.label}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className="filter-group">
+          <FolderKanban size={15} className="filter-icon" />
+          <select
+            className="filter-select"
+            value={projectFilter || 'ALL'}
+            onChange={(e) => onProjectFilterChange?.(e.target.value)}
+            aria-label="Filter by project"
+          >
+            <option value="ALL">All Tasks</option>
+            <option value="STANDALONE">Standalone Tasks</option>
+            {projects.map((p) => (
+              <option key={p.projectId} value={p.projectId}>
+                {p.projectName}
               </option>
             ))}
           </select>

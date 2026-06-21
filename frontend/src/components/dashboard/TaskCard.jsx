@@ -4,7 +4,7 @@ import { Edit3, Trash2 } from 'lucide-react';
 import { STATUS_LABELS, PRIORITY_LABELS } from '../../utils/constants';
 import { formatDueDateLabel, isOverdue, isToday } from '../../utils/helpers';
 
-const TaskCard = forwardRef(function TaskCard({ task, onEdit, onDelete }, ref) {
+const TaskCard = forwardRef(function TaskCard({ task, onEdit, onDelete, projects = [] }, ref) {
   const isCompleted = task.taskStatus === 'COMPLETED';
   const statusClass = task.taskStatus?.toLowerCase();
   const priorityClass = task.taskPriority?.toLowerCase();
@@ -12,6 +12,7 @@ const TaskCard = forwardRef(function TaskCard({ task, onEdit, onDelete }, ref) {
   const overdue = isOverdue(dueDateArr, task.taskStatus);
   const today = !isCompleted && isToday(dueDateArr);
   const dueLabel = formatDueDateLabel(dueDateArr, task.taskStatus);
+  const project = task.projectId ? projects.find((p) => p.projectId === task.projectId) : null;
 
   return (
     <motion.div
@@ -35,6 +36,7 @@ const TaskCard = forwardRef(function TaskCard({ task, onEdit, onDelete }, ref) {
           <span className={`status-badge ${statusClass}`}>
             {STATUS_LABELS[task.taskStatus] || task.taskStatus}
           </span>
+          {project && <span className="project-badge">{project.projectName}</span>}
           {dueLabel && (
             <span className={`due-date${overdue ? ' overdue' : ''}${today ? ' today' : ''}`}>
               {dueLabel}

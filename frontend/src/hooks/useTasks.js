@@ -1,19 +1,24 @@
 import { useState, useCallback, useEffect, useMemo, useRef } from 'react';
-import { fetchMyTasks, createTask, updateTask, deleteTask } from '../services/taskService';
+import { fetchMyTasks, fetchAllTasks, createTask, updateTask, deleteTask } from '../services/taskService';
 import { TASK_STATUS } from '../utils/constants';
 
-export function useTasks(onUnauthorized) {
+export function useTasks(onUnauthorized, skipInitialFetch = false) {
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const tasksRef = useRef(tasks);
   tasksRef.current = tasks;
 
-  const changeFilters = useCallback(async (params = {}) => {
+  const changeFilters = useCallback(async (params = {}, projects) => {
     setLoading(true);
     setError(null);
     try {
-      const data = await fetchMyTasks(params);
+      let data;
+      if (projects && projects.length > 0) {
+        data = await fetchAllTasks(params, projects);
+      } else {
+        data = await fetchMyTasks(params);
+      }
       setTasks(Array.isArray(data) ? data : []);
     } catch (err) {
       if (err.message === 'Unauthorized') {
@@ -27,11 +32,13 @@ export function useTasks(onUnauthorized) {
   }, [onUnauthorized]);
 
   useEffect(() => {
-    changeFilters({});
-  }, [changeFilters]);
+    if (!skipInitialFetch) {
+      changeFilters({});
+    }
+  }, [changeFilters, skipInitialFetch]);
 
-  const addTask = useCallback(async (name, description, taskStatus, taskPriority, dueDate) => {
-    const newTask = await createTask(name, description, taskStatus, taskPriority, dueDate);
+  const addTask = useCallback(async (name, description, taskStatus, taskPriority, dueDate, projectId) => {
+    const newTask = await createTask(name, description, taskStatus, taskPriority, dueDate, projectId);
     setTasks((prev) => [newTask, ...prev]);
     return newTask;
   }, []);

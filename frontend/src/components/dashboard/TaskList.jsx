@@ -4,7 +4,7 @@ import EmptyState from '../common/EmptyState';
 import { SkeletonList } from '../common/Loader';
 import { Inbox } from 'lucide-react';
 
-export default function TaskList({ tasks, loading, search, onEdit, onDelete }) {
+export default function TaskList({ tasks, loading, search, onEdit, onDelete, projects = [] }) {
   if (loading) {
     return (
       <div className="task-list-section">
@@ -51,6 +51,7 @@ export default function TaskList({ tasks, loading, search, onEdit, onDelete }) {
               task={task}
               onEdit={onEdit}
               onDelete={onDelete}
+              projects={projects}
             />
           ))}
         </AnimatePresence>

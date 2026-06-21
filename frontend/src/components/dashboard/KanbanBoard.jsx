@@ -12,7 +12,7 @@ const columns = [
   { id: TASK_STATUS.COMPLETED, title: 'Completed', color: '#22c55e' },
 ];
 
-const KanbanBoard = memo(function KanbanBoard({ tasks, onEdit, onDelete, onMoveTask }) {
+const KanbanBoard = memo(function KanbanBoard({ tasks, onEdit, onDelete, onMoveTask, projects = [] }) {
   const [activeId, setActiveId] = useState(null);
   const [localTasks, setLocalTasks] = useState(null);
 
@@ -111,6 +111,7 @@ const KanbanBoard = memo(function KanbanBoard({ tasks, onEdit, onDelete, onMoveT
                   task={task}
                   onEdit={onEdit}
                   onDelete={onDelete}
+                  projects={projects}
                 />
               ))}
             </KanbanColumn>
