@@ -4,22 +4,26 @@ package com.project.taskmanager;
  * Hello world!
  */
 
+import com.project.taskmanager.DAO.ProjectDAO;
 import com.project.taskmanager.DAO.TaskDAO;
 import com.project.taskmanager.DAO.UserDAO;
 import com.project.taskmanager.Exception.BusinessExceptionMapper;
 import com.project.taskmanager.JWT.JWTAuthenticator;
 import com.project.taskmanager.JWT.UserPrincipal;
 import com.project.taskmanager.filter.CorsFilter;
+import com.project.taskmanager.model.Project;
 import com.project.taskmanager.model.Task;
 import com.project.taskmanager.model.User;
-import com.project.taskmanager.resource.AuthResource;
-import com.project.taskmanager.resource.CorsResource;
-import com.project.taskmanager.resource.HelloResource;
+import com.project.taskmanager.resource.*;
 
-import com.project.taskmanager.resource.TaskResource;
-import com.project.taskmanager.service.AuthService;
-import com.project.taskmanager.service.TaskService;
-import com.project.taskmanager.service.UserService;
+import com.project.taskmanager.service.AuthServiceImpl;
+import com.project.taskmanager.service.Contracts.AuthService;
+import com.project.taskmanager.service.Contracts.ProjectService;
+import com.project.taskmanager.service.Contracts.TaskService;
+import com.project.taskmanager.service.Contracts.UserService;
+import com.project.taskmanager.service.ProjectServiceImpl;
+import com.project.taskmanager.service.TaskServiceImpl;
+import com.project.taskmanager.service.UserServiceImpl;
 import io.dropwizard.auth.AuthDynamicFeature;
 import io.dropwizard.auth.AuthValueFactoryProvider;
 import io.dropwizard.auth.oauth.OAuthCredentialAuthFilter;
@@ -37,7 +41,8 @@ public class TaskManagerApp
     private final HibernateBundle<TaskManagerConfiguration>
             hibernateBundle =
             new HibernateBundle<>(User.class,
-                    Task.class) {
+                    Task.class,
+                    Project.class) {
 
                 @Override
                 public DataSourceFactory getDataSourceFactory(
@@ -102,18 +107,21 @@ public class TaskManagerApp
 
         UserDAO userDAO = new UserDAO(hibernateBundle.getSessionFactory());
         TaskDAO taskDAO = new TaskDAO(hibernateBundle.getSessionFactory());
+        ProjectDAO projectDAO = new ProjectDAO(hibernateBundle.getSessionFactory());
 
 
 
 
-        UserService userService = new UserService(userDAO);
-        AuthService authService = new AuthService(userService);
-        TaskService taskService = new TaskService(taskDAO);
+        UserService userService = new UserServiceImpl(userDAO);
+        AuthService authService = new AuthServiceImpl(userService);
+        TaskService taskService = new TaskServiceImpl(taskDAO, projectDAO);
+        ProjectService projectService = new ProjectServiceImpl(projectDAO);
 
 
 
         environment.jersey().register(new AuthResource(authService));
         environment.jersey().register(new TaskResource(taskService));
+        environment.jersey().register(new ProjectResource(projectService));
 
     }
 }

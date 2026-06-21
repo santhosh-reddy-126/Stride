@@ -9,7 +9,11 @@ import java.time.LocalDateTime;
 
 public class CreateTaskRequest {
 
+    // not null is not required here, because whatever they pass, we update it according to auth token
     private Long userId;
+
+    // not null is not required here, because for standalone tasks projectId is null
+    private Long projectId;
 
     @NotBlank(message = "Task Name is required")
     @NotNull(message = "Name cannot be null")
@@ -29,8 +33,9 @@ public class CreateTaskRequest {
     public CreateTaskRequest(){
     }
 
-    public CreateTaskRequest(Long userId, String description, String name, TaskStatus taskStatus, Priority taskPriority, LocalDateTime dueDate) {
+    public CreateTaskRequest(Long userId, Long projectId, String description, String name, TaskStatus taskStatus, Priority taskPriority, LocalDateTime dueDate) {
         this.userId = userId;
+        this.projectId = projectId;
         this.description = description;
         this.name = name;
         this.taskStatus = taskStatus;
@@ -84,5 +89,13 @@ public class CreateTaskRequest {
 
     public void setTaskStatus(TaskStatus taskStatus) {
         this.taskStatus = taskStatus;
+    }
+
+    public Long getProjectId() {
+        return projectId;
+    }
+
+    public void setProjectId(Long projectId) {
+        this.projectId = projectId;
     }
 }

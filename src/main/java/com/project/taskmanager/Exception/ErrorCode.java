@@ -20,6 +20,11 @@ public enum ErrorCode {
     TASK_NOT_FOUND(
             404,
             "Task not found"
+    ),
+
+    PROJECT_NOT_FOUND(
+            404,
+            "Project not found"
     );
 
 

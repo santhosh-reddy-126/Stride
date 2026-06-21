@@ -1,16 +1,14 @@
 package com.project.taskmanager.DTO.Response;
 
-import com.project.taskmanager.model.Task;
-
 import java.util.List;
 
-public class UserTasks {
+public class UserTasksResponse {
 
     private Long userId;
 
     private List<TaskResponse> tasks;
 
-    public UserTasks(Long userId, List<TaskResponse> tasks) {
+    public UserTasksResponse(Long userId, List<TaskResponse> tasks) {
         this.userId = userId;
         this.tasks = tasks;
     }

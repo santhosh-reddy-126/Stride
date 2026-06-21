@@ -10,17 +10,18 @@ import com.project.taskmanager.Mapper.UserMapper;
 import com.project.taskmanager.Utils.AuthUtils;
 import com.project.taskmanager.Utils.JWUtils;
 import com.project.taskmanager.model.User;
+import com.project.taskmanager.service.Contracts.AuthService;
+import com.project.taskmanager.service.Contracts.UserService;
 
-import java.util.Optional;
-
-public class AuthService {
+public class AuthServiceImpl implements AuthService {
 
     private final UserService userService;
 
-    public AuthService(UserService userService){
+    public AuthServiceImpl(UserService userService){
         this.userService = userService;
     }
 
+    @Override
     public SuccessResponse signUp(SignUpRequest signUpRequest){
 
         if(userService.getUserByEmail(signUpRequest.getEmail()).isPresent()){
@@ -37,6 +38,7 @@ public class AuthService {
         return new SuccessResponse(true);
     }
 
+    @Override
     public LoginResponse login(LoginRequest loginRequest){
 
         User storedUser = userService.getUserByEmail(loginRequest.getEmail())
