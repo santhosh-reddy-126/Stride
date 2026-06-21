@@ -3,7 +3,8 @@ package com.project.taskmanager.resource;
 
 import com.project.taskmanager.DTO.Request.LoginRequest;
 import com.project.taskmanager.DTO.Request.SignUpRequest;
-import com.project.taskmanager.service.AuthService;
+import com.project.taskmanager.service.AuthServiceImpl;
+import com.project.taskmanager.service.Contracts.AuthService;
 import io.dropwizard.hibernate.UnitOfWork;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

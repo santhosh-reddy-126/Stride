@@ -14,17 +14,21 @@ import Modal from '../components/common/Modal';
 import ConfirmDialog from '../components/common/ConfirmDialog';
 import { useTasks } from '../hooks/useTasks';
 import { useAuth } from '../hooks/useAuth';
+import { fetchMyProjects } from '../services/projectService';
 
 export default function DashboardPage() {
   const { handleUnauthorized } = useAuth();
   const { tasks, loading, addTask, editTask, removeTask, moveTask, getFilteredTasks, stats, changeFilters } =
-    useTasks(handleUnauthorized);
+    useTasks(handleUnauthorized, true);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('ALL');
   const [priorityFilter, setPriorityFilter] = useState('ALL');
   const [dueStatusFilter, setDueStatusFilter] = useState('ALL');
+  const [projectFilter, setProjectFilter] = useState('ALL');
+  const [projects, setProjects] = useState([]);
+  const [projectsLoaded, setProjectsLoaded] = useState(false);
   const [viewMode, setViewMode] = useState('list');
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [creating, setCreating] = useState(false);
@@ -34,12 +38,29 @@ export default function DashboardPage() {
   const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
+    fetchMyProjects()
+      .then((data) => {
+        setProjects(Array.isArray(data) ? data : []);
+        setProjectsLoaded(true);
+      })
+      .catch(() => setProjectsLoaded(true));
+  }, []);
+
+  useEffect(() => {
+    if (projectFilter === 'ALL' && !projectsLoaded) return;
     const params = {};
     if (statusFilter !== 'ALL') params.status = statusFilter;
     if (priorityFilter !== 'ALL') params.priority = priorityFilter;
     if (dueStatusFilter !== 'ALL') params.dueStatus = dueStatusFilter;
-    changeFilters(params);
-  }, [statusFilter, priorityFilter, dueStatusFilter, changeFilters]);
+    if (projectFilter === 'ALL') {
+      changeFilters(params, projects);
+    } else if (projectFilter === 'STANDALONE') {
+      changeFilters(params);
+    } else {
+      params.projectId = projectFilter;
+      changeFilters(params);
+    }
+  }, [statusFilter, priorityFilter, dueStatusFilter, projectFilter, changeFilters, projects, projectsLoaded]);
 
   const filteredTasks = getFilteredTasks(search);
 
@@ -47,7 +68,7 @@ export default function DashboardPage() {
     async (name, description, taskStatus, taskPriority, dueDate) => {
       setCreating(true);
       try {
-        await addTask(name, description, taskStatus, taskPriority, dueDate);
+        await addTask(name, description, taskStatus, taskPriority, dueDate, null);
         toast.success('Task created successfully');
         setCreateModalOpen(false);
       } catch (err) {
@@ -137,6 +158,9 @@ export default function DashboardPage() {
               onPriorityFilterChange={setPriorityFilter}
               dueStatusFilter={dueStatusFilter}
               onDueStatusFilterChange={setDueStatusFilter}
+              projectFilter={projectFilter}
+              onProjectFilterChange={setProjectFilter}
+              projects={projects}
             >
               <div className="view-toggle">
                 <button
@@ -169,6 +193,7 @@ export default function DashboardPage() {
                 search={search}
                 onEdit={setEditingTask}
                 onDelete={setDeletingTask}
+                projects={projects}
               />
             ) : (
               <KanbanBoard
@@ -176,6 +201,7 @@ export default function DashboardPage() {
                 onEdit={setEditingTask}
                 onDelete={setDeletingTask}
                 onMoveTask={moveTask}
+                projects={projects}
               />
             )}
           </motion.div>

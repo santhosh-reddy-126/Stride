@@ -1,7 +1,7 @@
 import { createTaskApi, getMyTasksApi, updateTaskApi, deleteTaskApi } from '../api/taskApi';
 import { TASK_STATUS } from '../utils/constants';
 
-export async function createTask(name, description, taskStatus, taskPriority, dueDate) {
+export async function createTask(name, description, taskStatus, taskPriority, dueDate, projectId) {
   return createTaskApi({
     userId: null,
     name,
@@ -9,6 +9,7 @@ export async function createTask(name, description, taskStatus, taskPriority, du
     taskStatus: taskStatus || TASK_STATUS.CREATED,
     taskPriority: taskPriority || null,
     dueDate: dueDate || null,
+    projectId: projectId || null,
   });
 }
 
@@ -21,6 +22,15 @@ export async function fetchMyTasks(filters = {}) {
     return response.tasks;
   }
   return [];
+}
+
+export async function fetchAllTasks(filters = {}, projects = []) {
+  const { projectId, ...commonFilters } = filters;
+  const standalone = await fetchMyTasks(commonFilters);
+  const projectResults = await Promise.all(
+    projects.map((p) => fetchMyTasks({ ...commonFilters, projectId: p.projectId }))
+  );
+  return [...standalone, ...projectResults.flat()];
 }
 
 export async function updateTask(taskId, updates) {

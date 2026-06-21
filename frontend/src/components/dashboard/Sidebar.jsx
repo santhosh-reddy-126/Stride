@@ -6,11 +6,13 @@ import {
   ChevronLeft,
   ChevronRight,
   ClipboardCheck,
+  FolderKanban,
 } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 
 const navItems = [
   { path: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
+  { path: '/projects', icon: FolderKanban, label: 'Projects' },
 ];
 
 export default function Sidebar({ collapsed, onToggle, mobileOpen, onMobileClose }) {
@@ -58,7 +60,9 @@ export default function Sidebar({ collapsed, onToggle, mobileOpen, onMobileClose
 
         <nav className="sidebar-nav" aria-label="Main navigation">
           {navItems.map((item) => {
-            const isActive = location.pathname === item.path;
+            const isActive = item.path === '/dashboard'
+              ? location.pathname === item.path
+              : location.pathname.startsWith(item.path);
             return (
               <button
                 key={item.path}

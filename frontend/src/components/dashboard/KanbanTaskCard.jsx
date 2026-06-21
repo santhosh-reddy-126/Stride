@@ -5,7 +5,7 @@ import { Edit3, Trash2 } from 'lucide-react';
 import { STATUS_LABELS, PRIORITY_LABELS } from '../../utils/constants';
 import { formatDueDateLabel, isOverdue, isToday } from '../../utils/helpers';
 
-const KanbanTaskCard = memo(function KanbanTaskCard({ task, onEdit, onDelete }) {
+const KanbanTaskCard = memo(function KanbanTaskCard({ task, onEdit, onDelete, projects = [] }) {
   const isCompleted = task.taskStatus === 'COMPLETED';
   const statusClass = task.taskStatus?.toLowerCase();
   const priorityClass = task.taskPriority?.toLowerCase();
@@ -13,6 +13,7 @@ const KanbanTaskCard = memo(function KanbanTaskCard({ task, onEdit, onDelete }) 
   const overdue = isOverdue(dueDateArr, task.taskStatus);
   const today = !isCompleted && isToday(dueDateArr);
   const dueLabel = formatDueDateLabel(dueDateArr, task.taskStatus);
+  const project = task.projectId ? projects.find((p) => p.projectId === task.projectId) : null;
   const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
     id: task.taskId,
   });
@@ -38,6 +39,7 @@ const KanbanTaskCard = memo(function KanbanTaskCard({ task, onEdit, onDelete }) 
             {PRIORITY_LABELS[task.taskPriority] || task.taskPriority}
           </span>
         )}
+        {project && <span className="project-badge">{project.projectName}</span>}
         {dueLabel && (
           <span className={`due-date${overdue ? ' overdue' : ''}${today ? ' today' : ''}`}>
             {dueLabel}

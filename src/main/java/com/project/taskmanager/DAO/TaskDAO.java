@@ -1,6 +1,5 @@
 package com.project.taskmanager.DAO;
 
-import com.project.taskmanager.DTO.Request.UpdateTaskRequest;
 import com.project.taskmanager.model.Task;
 import com.project.taskmanager.model.enums.DueStatus;
 import com.project.taskmanager.model.enums.Priority;
@@ -33,7 +32,8 @@ public class TaskDAO extends AbstractDAO<Task> {
             Long userId,
             TaskStatus taskStatus,
             Priority priority,
-            DueStatus dueStatus
+            DueStatus dueStatus,
+            Long projectId
     ) {
 
         String hql = """
@@ -41,6 +41,7 @@ public class TaskDAO extends AbstractDAO<Task> {
         WHERE t.userId = :userId
         AND (:status IS NULL OR t.taskStatus = :status)
         AND (:priority IS NULL OR t.taskPriority = :priority)
+        AND ((:projectId IS NULL AND t.projectId is NULL) OR t.projectId = :projectId)
         """;
 
         if (dueStatus == DueStatus.NO_DUE_DATE) {
@@ -74,7 +75,8 @@ public class TaskDAO extends AbstractDAO<Task> {
                 .createQuery(hql, Task.class)
                 .setParameter("userId", userId)
                 .setParameter("status", taskStatus)
-                .setParameter("priority", priority);
+                .setParameter("priority", priority)
+                .setParameter("projectId", projectId);
 
         if (hql.contains(":today")) {
             query.setParameter("today", LocalDate.now());
@@ -108,6 +110,20 @@ public class TaskDAO extends AbstractDAO<Task> {
     public Task updateTaskStatus(Long taskId, TaskStatus taskStatus){
         Task task = get(taskId);
         task.setTaskStatus(taskStatus);
+        persist(task);
+        return task;
+    }
+
+    public Task updateTaskPriority(Long taskId, Priority priority){
+        Task task = get(taskId);
+        task.setTaskPriority(priority);
+        persist(task);
+        return task;
+    }
+
+    public Task updateDueDate(Long taskId, LocalDateTime dueDate){
+        Task task = get(taskId);
+        task.setDueDate(dueDate);
         persist(task);
         return task;
     }

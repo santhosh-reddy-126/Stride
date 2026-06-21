@@ -24,6 +24,11 @@ public class Task {
     private Long userId;
 
     @Column(
+            name = "project_id"
+    )
+    private Long projectId;
+
+    @Column(
             nullable = false
     )
     private String name;
@@ -62,12 +67,14 @@ public class Task {
     }
 
     public Task(Long userId,
+                Long projectId,
                 String name,
                 String description,
                 TaskStatus taskStatus,
                 Priority taskPriority,
                 LocalDateTime dueDate){
         this.userId = userId;
+        this.projectId = projectId;
         this.name=name;
         this.description=description;
         this.taskStatus=taskStatus;
@@ -153,5 +160,13 @@ public class Task {
 
     public void setDueDate(LocalDateTime dueDate) {
         this.dueDate = dueDate;
+    }
+
+    public Long getProjectId() {
+        return projectId;
+    }
+
+    public void setProjectId(Long projectId) {
+        this.projectId = projectId;
     }
 }

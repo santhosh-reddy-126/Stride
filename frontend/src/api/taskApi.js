@@ -27,6 +27,7 @@ export async function getMyTasksApi(params = {}) {
   if (params.status) query.append('status', params.status);
   if (params.priority) query.append('priority', params.priority);
   if (params.dueStatus) query.append('dueStatus', params.dueStatus);
+  if (params.projectId) query.append('projectId', params.projectId);
   const qs = query.toString();
   const url = `${API_BASE_URL}/task/myTasks${qs ? `?${qs}` : ''}`;
   const response = await fetch(url, {
